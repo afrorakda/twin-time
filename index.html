@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="apple-touch-icon" href="image_40.png">
+    <link rel="icon" href="image_40.png">
+    <title>Twin Time - Fridge Combo</title>
+    <style>
+        :root {
+            --bg: #f5f5f5;
+            --container-bg: #fff;
+            --main: #333;
+            --accent: #eee;
+            --input-bg: #fafafa;
+            --radius: 15px;
+            --night-bg: #1a1a1a;
+            --night-text: #eee;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--main);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--container-bg);
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header { text-align: center; margin-bottom: 5px; }
+        h1 { font-size: 24px; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
+
+        /* Clock Areas */
+        .clock-section {
+            width: 100%;
+            border-radius: var(--radius);
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: 0.3s ease;
+        }
+
+        /* THEM (Main) */
+        .them-section {
+            background-color: var(--input-bg);
+            border: 2px solid var(--accent);
+            position: relative;
+        }
+        .them-section.night {
+            background-color: var(--night-bg);
+            border-color: var(--night-bg);
+            color: var(--night-text);
+        }
+
+        .label { font-size: 12px; font-weight: 800; opacity: 0.5; margin-bottom: 5px; text-transform: uppercase; }
+        .night .label { opacity: 0.8; }
+
+        .time-display { font-size: 64px; font-weight: 800; line-height: 1; letter-spacing: -2px; margin: 5px 0; }
+        .date-display { font-size: 14px; font-weight: 600; }
+        .diff-tag { 
+            font-size: 11px; font-weight: 800; padding: 2px 8px; 
+            border-radius: 10px; background: rgba(0,0,0,0.05); margin-left: 5px;
+        }
+        .night .diff-tag { background: rgba(255,255,255,0.1); }
+
+        .night-icon { font-size: 24px; position: absolute; top: 15px; right: 15px; display: none; }
+        .night .night-icon { display: block; }
+
+        /* YOU (Sub) */
+        .you-section {
+            background-color: transparent;
+            border: none;
+            padding-top: 0;
+            padding-bottom: 10px;
+            opacity: 0.6;
+        }
+        .you-section .time-display { font-size: 32px; letter-spacing: -1px; }
+
+        /* Selector */
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            background-color: var(--input-bg);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--main);
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
+        /* UI Parts */
+        .support-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+            border-top: 1px solid var(--accent);
+            padding-top: 20px;
+        }
+
+        .kofi-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--main);
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: var(--radius);
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 40px 0 20px;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.8;
+            opacity: 0.5;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Twin Time</h1>
+    </header>
+
+    <div id="them-area" class="clock-section them-section">
+        <div class="night-icon">🌙</div>
+        <div class="label">Them</div>
+        <div id="them-time" class="time-display">00:00</div>
+        <div class="date-display">
+            <span id="them-date">---</span>
+            <span id="them-diff" class="diff-tag"></span>
+        </div>
+    </div>
+
+    <div class="clock-section you-section">
+        <div class="label">You</div>
+        <div id="you-time" class="time-display">00:00</div>
+        <div id="you-date" class="date-display">---</div>
+    </div>
+
+    <select id="city-selector" onchange="saveAndRefresh()">
+        <optgroup label="Major Cities">
+            <option value="0">London (UTC+0)</option>
+            <option value="1">Berlin / Paris (UTC+1)</option>
+            <option value="4">Dubai (UTC+4)</option>
+            <option value="5.5">Mumbai (UTC+5:30)</option>
+            <option value="7">Bangkok (UTC+7)</option>
+            <option value="8" selected>Singapore / KL (UTC+8)</option>
+            <option value="9">Tokyo / Seoul (UTC+9)</option>
+            <option value="10">Sydney (UTC+10)</option>
+            <option value="-5">New York (UTC-5)</option>
+            <option value="-8">Los Angeles (UTC-8)</option>
+        </optgroup>
+        <optgroup label="Manual UTC Offset">
+            <option value="-12">UTC-12</option>
+            <option value="-11">UTC-11</option>
+            <option value="-10">UTC-10</option>
+            <option value="-9">UTC-9</option>
+            <option value="-8">UTC-8</option>
+            <option value="-7">UTC-7</option>
+            <option value="-6">UTC-6</option>
+            <option value="-5">UTC-5</option>
+            <option value="-4">UTC-4</option>
+            <option value="-3">UTC-3</option>
+            <option value="-2">UTC-2</option>
+            <option value="-1">UTC-1</option>
+            <option value="0">UTC+0</option>
+            <option value="1">UTC+1</option>
+            <option value="2">UTC+2</option>
+            <option value="3">UTC+3</option>
+            <option value="4">UTC+4</option>
+            <option value="5">UTC+5</option>
+            <option value="6">UTC+6</option>
+            <option value="7">UTC+7</option>
+            <option value="8">UTC+8</option>
+            <option value="9">UTC+9</option>
+            <option value="10">UTC+10</option>
+            <option value="11">UTC+11</option>
+            <option value="12">UTC+12</option>
+            <option value="13">UTC+13</option>
+            <option value="14">UTC+14</option>
+        </optgroup>
+    </select>
+
+    <div class="support-area">
+        <a href="https://ko-fi.com/afrorakda" class="kofi-btn">☕️ buy me a coffee</a>
+    </div>
+</div>
+
+<footer>
+    No login / No tracking / No ads / Browser only<br>
+    Privacy Policy / afrorakda © 2026
+</footer>
+
+<script>
+    const themTimeEl = document.getElementById('them-time');
+    const themDateEl = document.getElementById('them-date');
+    const themDiffEl = document.getElementById('them-diff');
+    const themArea = document.getElementById('them-area');
+    const youTimeEl = document.getElementById('you-time');
+    const youDateEl = document.getElementById('you-date');
+    const citySelector = document.getElementById('city-selector');
+
+    // Load saved city
+    const savedOffset = localStorage.getItem('twinTimeOffset');
+    if (savedOffset !== null) {
+        citySelector.value = savedOffset;
+    }
+
+    function saveAndRefresh() {
+        localStorage.setItem('twinTimeOffset', citySelector.value);
+        updateClocks();
+    }
+
+    function updateClocks() {
+        const now = new Date();
+        
+        // YOU (Local)
+        youTimeEl.innerText = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        youDateEl.innerText = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+
+        // THEM (Selected)
+        const targetOffset = parseFloat(citySelector.value);
+        
+        // Calculate target time
+        // getTimezoneOffset is in minutes, convert to hours and invert for UTC
+        const localOffset = now.getTimezoneOffset() / 60; 
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const themDate = new Date(utc + (3600000 * targetOffset));
+
+        const themH = themDate.getHours();
+        themTimeEl.innerText = themDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        themDateEl.innerText = themDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+
+        // Relative Date (Yesterday / Tomorrow)
+        const youDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const themDay = new Date(themDate.getFullYear(), themDate.getMonth(), themDate.getDate());
+        const diffDays = (themDay - youDay) / (1000 * 60 * 60 * 24);
+
+        if (diffDays > 0.5) {
+            themDiffEl.innerText = "Tomorrow";
+            themDiffEl.style.display = "inline-block";
+        } else if (diffDays < -0.5) {
+            themDiffEl.innerText = "Yesterday";
+            themDiffEl.style.display = "inline-block";
+        } else {
+            themDiffEl.style.display = "none";
+        }
+
+        // Night Mode (20:00 - 05:00)
+        if (themH >= 20 || themH < 5) {
+            themArea.classList.add('night');
+        } else {
+            themArea.classList.remove('night');
+        }
+    }
+
+    setInterval(updateClocks, 1000);
+    updateClocks();
+
+</script>
+
+</body>
+</html>
