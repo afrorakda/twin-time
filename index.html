@@ -13,7 +13,7 @@
             --main: #333;
             --accent: #eee;
             --input-bg: #fafafa;
-            --ghost: #aaa; /* 少し明るく */
+            --ghost: #aaa;
             --radius: 15px;
             --night-bg: #1a1a1a;
             --night-text: #eee;
@@ -37,7 +37,7 @@
             width: 100%;
             max-width: 400px;
             background-color: var(--container-bg);
-            padding: 30px 15px 15px; /* 下パディングを減らす */
+            padding: 30px 15px 35px;
             border-radius: var(--radius);
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             display: flex;
@@ -45,7 +45,7 @@
             gap: 25px;
         }
 
-        /* Them Area (Main) */
+        /* THEM Area */
         .them-section {
             width: 100%;
             background-color: var(--input-bg);
@@ -93,10 +93,10 @@
         .night-icon { font-size: 28px; position: absolute; top: 15px; right: 15px; display: none; }
         .night .night-icon { display: block; }
 
-        /* You Area (Sub) */
+        /* YOU Area */
         .you-section {
             width: 100%;
-            padding: 10px;
+            padding: 5px;
             text-align: center;
             opacity: 0.6;
         }
@@ -118,24 +118,31 @@
             -webkit-appearance: none;
         }
 
-        /* Footer Buttons (控えめに) */
-        .footer-support {
-            margin-top: 15px;
+        /* 控えめだが使いやすいフッターボタン */
+        .footer-action-area {
+            margin-top: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            color: var(--ghost);
+            gap: 20px; /* ミスタッチ防止の十分な距離 */
         }
 
-        .foot-link {
+        .action-btn-sub {
+            width: 80%; /* 少し短くして控えめに */
+            padding: 12px;
+            background-color: var(--main);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: bold;
             text-decoration: none;
-            color: inherit;
-            font-weight: 600;
+            text-align: center;
             cursor: pointer;
+            opacity: 0.9;
+            transition: 0.1s;
         }
-        .foot-link:hover { color: var(--main); }
+        .action-btn-sub:active { transform: scale(0.98); opacity: 1; }
 
         footer {
             margin-top: auto;
@@ -245,9 +252,9 @@
         </optgroup>
     </select>
 
-    <div class="footer-support">
-        <a href="https://ko-fi.com/afrorakda" target="_blank" class="foot-link">☕️ buy me a coffee</a>
-        <span class="foot-link" onclick="showModal()">📱 Add to Home Screen</span>
+    <div class="footer-action-area">
+        <a href="https://ko-fi.com/afrorakda" target="_blank" class="action-btn-sub">☕️ buy me a coffee</a>
+        <div class="action-btn-sub" onclick="showModal()">📱 Add to Home Screen</div>
     </div>
 </div>
 
@@ -283,7 +290,6 @@
     const youDateEl = document.getElementById('you-date');
     const citySelector = document.getElementById('city-selector');
 
-    // Load saved city
     const savedOffset = localStorage.getItem('twinTimeOffset');
     if (savedOffset !== null) {
         citySelector.value = savedOffset;
@@ -296,24 +302,17 @@
 
     function updateClocks() {
         const now = new Date();
-        
-        // YOU (Local)
         youTimeEl.innerText = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
         youDateEl.innerText = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 
-        // THEM (Selected)
         const targetOffset = parseFloat(citySelector.value);
-        
-        // Calculate target time
         const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
         const themDate = new Date(utc + (3600000 * targetOffset));
 
         const themH = themDate.getHours();
         themTimeEl.innerText = themDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-        // 曜日を追加 (weekday: 'short')
         themDateEl.innerText = themDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 
-        // Relative Date (Yesterday / Tomorrow)
         const youDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const themDay = new Date(themDate.getFullYear(), themDate.getMonth(), themDate.getDate());
         const diffDays = (themDay - youDay) / (1000 * 60 * 60 * 24);
@@ -328,7 +327,6 @@
             themDiffEl.style.display = "none";
         }
 
-        // Night Mode (20:00 - 05:00)
         if (themH >= 20 || themH < 5) {
             themArea.classList.add('night');
         } else {
@@ -341,7 +339,6 @@
 
     setInterval(updateClocks, 1000);
     updateClocks();
-
 </script>
 
 </body>
