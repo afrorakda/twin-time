@@ -13,7 +13,7 @@
             --main: #333;
             --accent: #eee;
             --input-bg: #fafafa;
-            --ghost: #888;
+            --ghost: #aaa; /* 少し明るく */
             --radius: 15px;
             --night-bg: #1a1a1a;
             --night-text: #eee;
@@ -37,7 +37,7 @@
             width: 100%;
             max-width: 400px;
             background-color: var(--container-bg);
-            padding: 30px 15px;
+            padding: 30px 15px 15px; /* 下パディングを減らす */
             border-radius: var(--radius);
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             display: flex;
@@ -45,13 +45,13 @@
             gap: 25px;
         }
 
-        /* Them Area (Main) - 巨大化 */
+        /* Them Area (Main) */
         .them-section {
             width: 100%;
             background-color: var(--input-bg);
             border: 2px solid var(--accent);
             border-radius: var(--radius);
-            padding: 30px 20px;
+            padding: 35px 20px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -67,9 +67,8 @@
         .label { font-size: 13px; font-weight: 800; opacity: 0.4; text-transform: uppercase; letter-spacing: 1px; }
         .night .label { opacity: 0.7; }
 
-        /* 時間を巨大化 */
         .time-display-huge { 
-            font-size: 100px; /* 超巨大化 */
+            font-size: 100px;
             font-weight: 900; 
             line-height: 1; 
             letter-spacing: -6px; 
@@ -81,7 +80,7 @@
             color: var(--main);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
         .night .date-display-them { color: var(--night-text); }
 
@@ -117,44 +116,30 @@
             outline: none;
             cursor: pointer;
             -webkit-appearance: none;
-            transition: 0.2s;
         }
 
-        /* Action Buttons (buy & add) */
-        .support-area {
+        /* Footer Buttons (控えめに) */
+        .footer-support {
+            margin-top: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
-            margin-top: 15px;
-            border-top: 1px solid var(--accent);
-            padding-top: 25px;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--ghost);
         }
 
-        .action-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            background-color: var(--main);
-            color: var(--container-bg);
-            border: none;
-            border-radius: var(--radius);
-            padding: 18px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
+        .foot-link {
             text-decoration: none;
-            transition: 0.1s;
+            color: inherit;
+            font-weight: 600;
+            cursor: pointer;
         }
-        .action-btn:active { transform: scale(0.98); }
-
-        .gh-icon { font-size: 16px; opacity: 0.8; }
+        .foot-link:hover { color: var(--main); }
 
         footer {
             margin-top: auto;
-            padding: 40px 0 20px;
+            padding: 30px 0 20px;
             text-align: center;
             font-size: 11px;
             line-height: 1.8;
@@ -260,9 +245,9 @@
         </optgroup>
     </select>
 
-    <div class="support-area">
-        <a href="https://ko-fi.com/afrorakda" class="action-btn">☕️ buy me a coffee</a>
-        <button class="action-btn" onclick="showModal()">📱 Add to Home Screen</button>
+    <div class="footer-support">
+        <a href="https://ko-fi.com/afrorakda" target="_blank" class="foot-link">☕️ buy me a coffee</a>
+        <span class="foot-link" onclick="showModal()">📱 Add to Home Screen</span>
     </div>
 </div>
 
