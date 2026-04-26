@@ -2,48 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="apple-touch-icon" href="image_40.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Twin Time</title>
+    
     <link rel="icon" href="image_40.png">
-    <title>Twin Time - Fridge Combo</title>
+    <link rel="apple-touch-icon" href="image_40.png">
+
     <style>
         :root {
-            --bg: #f5f5f5;
-            --container-bg: #fff;
             --main: #333;
+            --bg: #fff;
             --accent: #eee;
             --input-bg: #fafafa;
-            --ghost: #aaa;
             --radius: 15px;
             --night-bg: #1a1a1a;
             --night-text: #eee;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* 憲法遵守: 角丸15px / iOS Safari対策 / 全域選択禁止 */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; -webkit-user-select: none; user-select: none; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--main);
-            margin: 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             min-height: 100vh;
-            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            padding: env(safe-area-inset-top, 20px) 20px env(safe-area-inset-bottom, 20px) 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 400px;
-            background-color: var(--container-bg);
-            padding: 30px 15px 35px;
-            border-radius: var(--radius);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            max-width: 420px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 15px;
         }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -1.5px; }
+
+        .hub-link {
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--main);
+            background: var(--accent);
+            padding: 8px 14px;
+            border-radius: var(--radius);
+        }
+
+        .subtitle { font-size: 0.9rem; color: #666; font-weight: 700; text-align: left; }
 
         /* THEM Area */
         .them-section {
@@ -64,44 +80,43 @@
             color: var(--night-text);
         }
 
-        .label { font-size: 13px; font-weight: 800; opacity: 0.4; text-transform: uppercase; letter-spacing: 1px; }
-        .night .label { opacity: 0.7; }
+        .label-tag { font-size: 11px; font-weight: 900; opacity: 0.4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .night .label-tag { opacity: 0.7; }
 
         .time-display-huge { 
-            font-size: 100px;
+            font-size: 84px;
             font-weight: 900; 
             line-height: 1; 
-            letter-spacing: -6px; 
-            margin: 10px 0 5px; 
+            letter-spacing: -5px; 
+            margin: 5px 0; 
         }
+        
         .date-display-them { 
             font-size: 16px; 
-            font-weight: 700; 
-            color: var(--main);
+            font-weight: 800; 
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
-        .night .date-display-them { color: var(--night-text); }
 
         .diff-tag { 
-            font-size: 11px; font-weight: 800; padding: 3px 8px; 
+            font-size: 11px; font-weight: 900; padding: 4px 10px; 
             border-radius: 10px; background: rgba(0,0,0,0.06); 
         }
         .night .diff-tag { background: rgba(255,255,255,0.15); }
 
-        .night-icon { font-size: 28px; position: absolute; top: 15px; right: 15px; display: none; }
+        .night-icon { font-size: 24px; position: absolute; top: 15px; right: 15px; display: none; }
         .night .night-icon { display: block; }
 
         /* YOU Area */
         .you-section {
             width: 100%;
-            padding: 5px;
+            padding: 10px;
             text-align: center;
-            opacity: 0.6;
+            opacity: 0.5;
         }
-        .time-display-small { font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: -1.5px; margin: 0 0 5px; }
-        .date-display-small { font-size: 14px; font-weight: 600; }
+        .time-display-small { font-size: 32px; font-weight: 900; line-height: 1; letter-spacing: -1.5px; margin-bottom: 5px; }
+        .date-display-small { font-size: 14px; font-weight: 700; }
 
         /* City Selector */
         select {
@@ -110,100 +125,63 @@
             border: 2px solid var(--accent);
             border-radius: var(--radius);
             background-color: var(--input-bg);
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 800;
             color: var(--main);
             outline: none;
             cursor: pointer;
             -webkit-appearance: none;
+            -webkit-text-fill-color: var(--main);
+            opacity: 1 !important;
         }
 
-        /* 控えめだが使いやすいフッターボタン */
-        .footer-action-area {
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px; /* ミスタッチ防止の十分な距離 */
+        .footer-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 5px; }
+        .kofi-btn {
+            background: var(--main); color: #fff; text-decoration: none;
+            padding: 16px; border-radius: var(--radius); text-align: center;
+            font-weight: 900; font-size: 0.9rem; -webkit-text-fill-color: #fff;
+        }
+        .home-btn {
+            background: var(--accent); color: var(--main); border: none;
+            padding: 12px; border-radius: var(--radius); font-weight: 800; font-size: 0.8rem; cursor: pointer;
         }
 
-        .action-btn-sub {
-            width: 80%; /* 少し短くして控えめに */
-            padding: 12px;
-            background-color: var(--main);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: bold;
-            text-decoration: none;
-            text-align: center;
-            cursor: pointer;
-            opacity: 0.9;
-            transition: 0.1s;
-        }
-        .action-btn-sub:active { transform: scale(0.98); opacity: 1; }
+        /* 鉄壁フッター（聖域） */
+        footer { text-align: center; font-size: 0.75rem; color: #999; line-height: 1.6; font-weight: 700; margin-top: 15px; }
+        footer a { color: inherit; text-decoration: underline; }
 
-        footer {
-            margin-top: auto;
-            padding: 30px 0 20px;
-            text-align: center;
-            font-size: 11px;
-            line-height: 1.8;
-            opacity: 0.5;
+        #modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px);
         }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            justify-content: center; align-items: center;
-            z-index: 1000;
-        }
-
         .modal-content {
-            background: var(--container-bg);
-            padding: 30px;
-            border-radius: var(--radius);
-            max-width: 340px;
-            width: 90%;
-            position: relative;
+            background: #fff; width: 90%; max-width: 340px; padding: 35px;
+            border-radius: var(--radius); text-align: left; position: relative;
         }
-
-        .modal-close-x {
-            position: absolute;
-            top: 15px; right: 15px;
-            color: #ccc; font-size: 22px; cursor: pointer;
-            padding: 5px;
-        }
-
-        .modal-title {
-            display: flex; align-items: center; gap: 10px;
-            font-size: 20px; font-weight: bold; margin-bottom: 25px;
-        }
-
-        .modal-item { margin-bottom: 18px; font-size: 14px; line-height: 1.6; color: #555; }
-        .modal-item b { display: block; margin-bottom: 3px; color: var(--main); }
-
+        .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #ccc; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <header>
+        <h1>Twin Time</h1>
+        <a href="https://afrorakda.github.io/" class="hub-link">🏠 Hub</a>
+    </header>
+    <p class="subtitle">Check time difference instantly.</p>
+
     <div id="them-area" class="them-section">
         <div class="night-icon">🌙</div>
-        <div class="label">Them</div>
+        <div class="label-tag">Them</div>
         <div id="them-time" class="time-display-huge">00:00</div>
         <div class="date-display-them">
             <span id="them-date">---</span>
-            <span id="them-diff" class="diff-tag"></span>
+            <span id="them-diff" class="diff-tag" style="display:none;"></span>
         </div>
     </div>
 
     <div class="you-section">
-        <div class="label">You</div>
+        <div class="label-tag">You</div>
         <div id="you-time" class="time-display-small">00:00</div>
         <div id="you-date" class="date-display-small">---</div>
     </div>
@@ -222,62 +200,42 @@
             <option value="-8">Los Angeles (UTC-8)</option>
         </optgroup>
         <optgroup label="Manual UTC Offset">
-            <option value="-12">UTC-12</option>
-            <option value="-11">UTC-11</option>
-            <option value="-10">UTC-10</option>
-            <option value="-9">UTC-9</option>
-            <option value="-8">UTC-8</option>
-            <option value="-7">UTC-7</option>
-            <option value="-6">UTC-6</option>
-            <option value="-5">UTC-5</option>
-            <option value="-4">UTC-4</option>
-            <option value="-3">UTC-3</option>
-            <option value="-2">UTC-2</option>
-            <option value="-1">UTC-1</option>
-            <option value="0">UTC+0</option>
-            <option value="1">UTC+1</option>
-            <option value="2">UTC+2</option>
-            <option value="3">UTC+3</option>
-            <option value="4">UTC+4</option>
-            <option value="5">UTC+5</option>
-            <option value="6">UTC+6</option>
-            <option value="7">UTC+7</option>
-            <option value="8">UTC+8</option>
-            <option value="9">UTC+9</option>
-            <option value="10">UTC+10</option>
-            <option value="11">UTC+11</option>
-            <option value="12">UTC+12</option>
-            <option value="13">UTC+13</option>
+            <option value="-12">UTC-12</option><option value="-11">UTC-11</option>
+            <option value="-10">UTC-10</option><option value="-9">UTC-9</option>
+            <option value="-8">UTC-8</option><option value="-7">UTC-7</option>
+            <option value="-6">UTC-6</option><option value="-5">UTC-5</option>
+            <option value="-4">UTC-4</option><option value="-3">UTC-3</option>
+            <option value="-2">UTC-2</option><option value="-1">UTC-1</option>
+            <option value="0">UTC+0</option><option value="1">UTC+1</option>
+            <option value="2">UTC+2</option><option value="3">UTC+3</option>
+            <option value="4">UTC+4</option><option value="5">UTC+5</option>
+            <option value="6">UTC+6</option><option value="7">UTC+7</option>
+            <option value="8">UTC+8</option><option value="9">UTC+9</option>
+            <option value="10">UTC+10</option><option value="11">UTC+11</option>
+            <option value="12">UTC+12</option><option value="13">UTC+13</option>
             <option value="14">UTC+14</option>
         </optgroup>
     </select>
 
-    <div class="footer-action-area">
-        <a href="https://ko-fi.com/afrorakda" target="_blank" class="action-btn-sub">☕️ buy me a coffee</a>
-        <div class="action-btn-sub" onclick="showModal()">📱 Add to Home Screen</div>
+    <div class="footer-btns">
+        <a id="kofi-link" href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕️ buy me a coffee</a>
+        <button class="home-btn" onclick="showModal()">Add to Home Screen</button>
     </div>
+
+    <footer>
+        <span id="footer-text">No login / No tracking / No ads / Browser only</span><br>
+        <a id="privacy-link" href="https://afrorakda.com/privacy/">Privacy Policy</a> / <span id="copyright">afrorakda © 2026</span>
+    </footer>
 </div>
 
-<footer>
-    No login / No tracking / No ads / Browser only<br>
-    Privacy Policy / afrorakda © 2026
-</footer>
-
-<div id="homeModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-close-x" onclick="closeModal()">×</div>
-        <div class="modal-title"><span>📱</span> Install</div>
-        <div class="modal-item">
-            Add this tool to your home screen.
-        </div>
-        <div class="modal-item">
-            <b>🍏 iPhone (Safari):</b>
-            Tap Share, then Add to Home Screen.
-        </div>
-        <div class="modal-item">
-            <b>🤖 Android (Chrome):</b>
-            Tap Menu (⋮), then Add to Home Screen.
-        </div>
+<div id="modal" onclick="hideModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close-x" onclick="hideModal()">×</span>
+        <h3 id="modal-title" style="margin-bottom: 15px; font-weight: 900;">📱 Install</h3>
+        <p id="modal-body" style="font-size: 0.9rem; line-height: 1.6; font-weight: 700;">
+            🍏 <strong>iPhone:</strong><br>Share > Add to Home Screen<br><br>
+            🤖 <strong>Android:</strong><br>Menu (⋮) > Add to Home Screen
+        </p>
     </div>
 </div>
 
@@ -290,10 +248,9 @@
     const youDateEl = document.getElementById('you-date');
     const citySelector = document.getElementById('city-selector');
 
+    // データの聖域保持
     const savedOffset = localStorage.getItem('twinTimeOffset');
-    if (savedOffset !== null) {
-        citySelector.value = savedOffset;
-    }
+    if (savedOffset !== null) citySelector.value = savedOffset;
 
     function saveAndRefresh() {
         localStorage.setItem('twinTimeOffset', citySelector.value);
@@ -315,18 +272,19 @@
 
         const youDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const themDay = new Date(themDate.getFullYear(), themDate.getMonth(), themDate.getDate());
-        const diffDays = (themDay - youDay) / (1000 * 60 * 60 * 24);
+        const diffDays = Math.round((themDay - youDay) / (1000 * 60 * 60 * 24));
 
-        if (diffDays > 0.5) {
+        if (diffDays === 1) {
             themDiffEl.innerText = "Tomorrow";
             themDiffEl.style.display = "inline-block";
-        } else if (diffDays < -0.5) {
+        } else if (diffDays === -1) {
             themDiffEl.innerText = "Yesterday";
             themDiffEl.style.display = "inline-block";
         } else {
             themDiffEl.style.display = "none";
         }
 
+        // Night Mode Logic (20:00 - 05:00)
         if (themH >= 20 || themH < 5) {
             themArea.classList.add('night');
         } else {
@@ -334,11 +292,28 @@
         }
     }
 
-    function showModal() { document.getElementById('homeModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('homeModal').style.display = 'none'; }
+    function showModal() { document.getElementById('modal').style.display = 'flex'; }
+    function hideModal() { document.getElementById('modal').style.display = 'none'; }
+
+    // 鉄壁ロジック: 削除厳禁・聖域
+    async function loadFooter() {
+        try {
+            const response = await fetch('footer.json');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.footerText) document.getElementById('footer-text').innerText = data.footerText;
+                if (data.privacyLink) document.getElementById('privacy-link').href = data.privacyLink;
+                if (data.copyright) document.getElementById('copyright').innerText = data.copyright;
+                if (data.kofiText) document.getElementById('kofi-link').innerText = data.kofiText;
+                if (data.modalTitle) document.getElementById('modal-title').innerText = data.modalTitle;
+                if (data.modalBody) document.getElementById('modal-body').innerHTML = data.modalBody;
+            }
+        } catch (e) { console.log("Static footer active."); }
+    }
 
     setInterval(updateClocks, 1000);
     updateClocks();
+    loadFooter();
 </script>
 
 </body>
